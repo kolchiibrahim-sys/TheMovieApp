@@ -4,10 +4,13 @@
 //
 //  Created by Kolchı Ibrahım on 31.01.26.
 //
-
 import UIKit
 
-class HomeController: BaseController {
+final class HomeController: BaseController {
+    
+    private let searchController = UISearchController(searchResultsController: nil)
+    private let viewModel = HomeViewModel()
+    
     lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .zero
@@ -20,26 +23,32 @@ class HomeController: BaseController {
         collection.backgroundColor = .clear
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(HomeCell.self, forCellWithReuseIdentifier: "HomeCell")
+        collection.contentInsetAdjustmentBehavior = .automatic
         return collection
     }()
     
-    private let viewModel = HomeViewModel()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     override func configureUI() {
-        navigationItem.title = "Movies"
         view.backgroundColor = .white
+        navigationItem.title = "Movies"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search movies"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     override func configureViewModel() {
         viewModel.getMovies()
-        viewModel.success = {
-            self.collection.reloadData()
-            print("self.viewModel.items.count: \(self.viewModel.items.count)")
+        viewModel.success = { [weak self] in
+            self?.collection.reloadData()
+            print("self.viewModel.items.count: \(self?.viewModel.items.count ?? 0)")
         }
     }
     
@@ -54,18 +63,32 @@ class HomeController: BaseController {
     }
 }
 
+extension HomeController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let _ = searchController.searchBar.text ?? ""
+    }
+}
+
 extension HomeController: CollectionConfiguration {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.items.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeCell", for: indexPath) as! HomeCell
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "HomeCell",
+            for: indexPath
+        ) as! HomeCell
+        
         cell.configure(data: viewModel.items[indexPath.item])
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         .init(width: collectionView.frame.width, height: 312)
     }
 }
