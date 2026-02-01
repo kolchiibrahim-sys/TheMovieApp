@@ -18,7 +18,7 @@ class SignUpController: UIViewController {
     
     private let illustrationImageView: UIImageView = {
         let iv = UIImageView()
-        iv.image = UIImage(named: "signup_illustration") // Şəkli Assets-ə əlavə etməlisən
+        iv.image = UIImage(named: "signup_illustration")
         iv.contentMode = .scaleAspectFit
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
@@ -40,7 +40,6 @@ class SignUpController: UIViewController {
         icon.tintColor = .gray
         t.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 20))
         t.leftViewMode = .always
-        // İkonu yerləşdirmək üçün alt görünüş kimi əlavə edirik
         let iconView = UIImageView(frame: CGRect(x: 10, y: 0, width: 20, height: 20))
         iconView.image = UIImage(systemName: "at")
         iconView.contentMode = .scaleAspectFit
@@ -103,7 +102,6 @@ class SignUpController: UIViewController {
         return b
     }()
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()

@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 //        setRootController(windowScene: windowScene)
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = ForgotPasswordController()
+        window?.rootViewController = UserHomeController()
         window?.makeKeyAndVisible()
     }
     
