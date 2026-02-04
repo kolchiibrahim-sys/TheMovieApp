@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TopImageBottomLabelProtocol {
+    var titleText: String { get }
+    var imageName: String { get }
+}
 class TopImageBottomLabelCell: UICollectionViewCell {
     lazy var titleLabel: UILabel = {
         let l = UILabel()
@@ -51,8 +55,8 @@ class TopImageBottomLabelCell: UICollectionViewCell {
         ])
     }
     
-    func configure(data: MovieResult) {
-        titleLabel.text = data.originalTitle
-        topImage.loadURL(data: data.posterPath ?? "")
+    func configure(data: TopImageBottomLabelProtocol) {
+        titleLabel.text = data.titleText
+        topImage.loadURL(data: data.imageName)
     }
 }

@@ -45,7 +45,7 @@ final class HomeViewModel {
                         endpoint: "movie/popular") { data, errorMessage in
             if let errorMessage {
                 self.error?(errorMessage)
-            } else if let data {
+                } else if let data {
                 self.items.append(.init(title: "Popular",
                                         items: data.results ?? []))
                 self.success?()

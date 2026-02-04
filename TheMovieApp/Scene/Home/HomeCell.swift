@@ -71,7 +71,7 @@ extension HomeCell: CollectionConfiguration {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TopImageBottomLabelCell.identifier,
                                                       for: indexPath) as! TopImageBottomLabelCell
-        cell.configure(data: items[indexPath.item])
+       // cell.configure(data: items[indexPath.item])
         return cell
     }
     
