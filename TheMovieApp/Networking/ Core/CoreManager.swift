@@ -25,7 +25,7 @@ class CoreManager {
                    headers: CoreHelper.shared.headers).responseData { response in
             switch response.result {
             case .success(let data):
-                print(String(data: data, encoding: .utf8) ?? "<non-UTF8 response data>")
+                print(String(data: data, encoding: .utf8))
                 do {
                     let result = try JSONDecoder().decode(T.self, from: data)
                     print(result)
@@ -39,4 +39,3 @@ class CoreManager {
         }
     }
 }
-

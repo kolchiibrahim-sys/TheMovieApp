@@ -4,7 +4,10 @@
 //
 //  Created by Kolchı Ibrahım on 31.01.26.
 //
+import Foundation
+
 struct Movie: Codable {
+//    let dates: Dates?
     let page: Int?
     let results: [MovieResult]?
     let totalPages, totalResults: Int?
@@ -16,7 +19,11 @@ struct Movie: Codable {
     }
 }
 
-struct MovieResult: Codable {
+//struct Dates: Codable {
+//    let maximum, minimum: String?
+//}
+
+struct MovieResult: Codable, TopImageBottomLabelProtocol {
     let adult: Bool?
     let backdropPath: String?
     let genreIDS: [Int]?
@@ -28,6 +35,14 @@ struct MovieResult: Codable {
     let video: Bool?
     let voteAverage: Double?
     let voteCount: Int?
+    
+    var titleText: String {
+        originalTitle ?? ""
+    }
+    
+    var imageName: String {
+        posterPath ?? ""
+    }
 
     enum CodingKeys: String, CodingKey {
         case adult

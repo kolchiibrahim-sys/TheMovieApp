@@ -4,6 +4,7 @@
 //
 //  Created by Kolchı Ibrahım on 31.01.26.
 //
+
 import UIKit
 
 class TabbarController: UITabBarController {
@@ -17,12 +18,18 @@ class TabbarController: UITabBarController {
     
     private func configureViewControllers() {
         let homeController = HomeController()
-        let navigationController = UINavigationController(rootViewController: homeController)
-        navigationController.tabBarItem = .init(title: "Home",
-                                                image: .init(systemName: "house.fill"),
-                                                tag: 0)
+        let homeNav = UINavigationController(rootViewController: homeController)
+        homeNav.tabBarItem = .init(title: "Home",
+                                   image: .init(systemName: "house.fill"),
+                                   tag: 0)
         
-        viewControllers = [navigationController]
+        let actorController = ActorController()
+        let actorNav = UINavigationController(rootViewController: actorController)
+        actorNav.tabBarItem = .init(title: "Actors",
+                                    image: .init(systemName: "person.fill"),
+                                    tag: 1)
+        
+        viewControllers = [homeNav, actorNav]
     }
     
     private func configureTabbarUI() {

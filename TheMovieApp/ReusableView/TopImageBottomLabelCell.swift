@@ -11,6 +11,7 @@ protocol TopImageBottomLabelProtocol {
     var titleText: String { get }
     var imageName: String { get }
 }
+
 class TopImageBottomLabelCell: UICollectionViewCell {
     lazy var titleLabel: UILabel = {
         let l = UILabel()
