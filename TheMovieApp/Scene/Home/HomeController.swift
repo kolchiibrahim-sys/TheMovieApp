@@ -108,6 +108,10 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
+        guard indexPath.section < viewModel.items.count else {
+            return UICollectionViewCell()
+        }
+
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "HomeSectionCell",
             for: indexPath
