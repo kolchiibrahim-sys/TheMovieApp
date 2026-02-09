@@ -48,7 +48,7 @@ final class SearchResultsController: UIViewController {
             heightDimension: .estimated(300)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = .init(top: 0, leading: 6, bottom: 16, trailing: 6)
+        item.contentInsets = .init(top: 8, leading: 8, bottom: 16, trailing: 8)
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -60,7 +60,14 @@ final class SearchResultsController: UIViewController {
         )
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 16, leading: 12, bottom: 16, trailing: 12)
+        section.interGroupSpacing = 20
+        section.contentInsets = .init(
+            top: 16,
+            leading: 16,
+            bottom: 24,
+            trailing: 16
+        )
+
 
         return UICollectionViewCompositionalLayout(section: section)
     }
@@ -86,4 +93,6 @@ extension SearchResultsController: UICollectionViewDataSource {
     }
 }
 
-extension SearchResultsController: UICollectionViewDelegate {}
+extension SearchResultsController: UICollectionViewDelegate {
+    
+}
