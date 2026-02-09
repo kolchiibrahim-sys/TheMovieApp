@@ -45,7 +45,7 @@ final class SearchResultsController: UIViewController {
 
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.5),
-            heightDimension: .estimated(260)
+            heightDimension: .estimated(300)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = .init(top: 0, leading: 6, bottom: 16, trailing: 6)
