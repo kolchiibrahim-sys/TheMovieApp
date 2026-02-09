@@ -13,6 +13,7 @@ enum Endpoint {
     case upcomingMovies
     case topRatedMovies
     case popularActors
+    case trendingMovies
 }
 
 extension Endpoint {
@@ -29,6 +30,8 @@ extension Endpoint {
             return "/movie/top_rated"
         case .popularActors:
             return "/person/popular"
+        case .trendingMovies:
+            return "/trending/movie/day"
         }
     }
 

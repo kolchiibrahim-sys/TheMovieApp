@@ -21,9 +21,13 @@ final class HomeViewModel {
     func loadHomeData() {
         items.removeAll()
 
+        fetch(endpoint: .trendingMovies, title: "Trending Today")
         fetch(endpoint: .nowPlayingMovies, title: "Now Playing")
+        fetch(endpoint: .upcomingMovies, title: "Upcoming")
         fetch(endpoint: .popularMovies, title: "Popular")
+        fetch(endpoint: .topRatedMovies, title: "Top Rated")
     }
+
 
     private func fetch(endpoint: Endpoint, title: String) {
         service.fetchMovies(endpoint: endpoint) { [weak self] result in
