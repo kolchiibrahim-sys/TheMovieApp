@@ -46,35 +46,28 @@ final class HomeViewModel {
             }
         }
     }
+    func searchMovies(query: String, completion: @escaping ([Movie]) -> Void) {
 
-    func searchMovies(query: String) {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-
         guard !trimmed.isEmpty else {
-            cancelSearch()
+            completion([])
             return
         }
 
         isSearching = true
         items.removeAll()
 
-        service.fetchMovies(endpoint: .searchMovies(query: trimmed)) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let movies):
-                    self?.items = [
-                        HomeModel(
-                            title: "Results for \"\(trimmed)\"",
-                            movies: movies
-                        )
-                    ]
-                    self?.onSuccess?()
-                case .failure(let error):
-                    self?.onError?(error.localizedDescription)
+        service.fetchMovies(endpoint: .searchMovies(query: trimmed)) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let movies):
+                        completion(movies)
+                    case .failure:
+                        completion([])
+                    }
                 }
             }
         }
-    }
 
     func cancelSearch() {
         guard isSearching else { return }

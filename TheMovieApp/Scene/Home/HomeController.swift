@@ -8,8 +8,10 @@ import UIKit
 
 final class HomeController: BaseController {
 
-    private let searchController = UISearchController(searchResultsController: nil)
     private let viewModel = HomeViewModel()
+    private let searchController = UISearchController(
+        searchResultsController: SearchResultsController()
+    )
 
     private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -31,23 +33,27 @@ final class HomeController: BaseController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureSearch()
         bindViewModel()
         viewModel.loadHomeData()
     }
 
     // MARK: - UI
     override func configureUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         navigationItem.title = "Movies"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-
-        searchController.searchResultsUpdater = self
-        searchController.searchBar.delegate = self //
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search movies"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
+    }
+
+    // MARK: - Search
+    private func configureSearch() {
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search movies"
     }
 
     // MARK: - Constraints
@@ -75,7 +81,12 @@ final class HomeController: BaseController {
 extension HomeController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let text = searchController.searchBar.text ?? ""
-        viewModel.searchMovies(query: text)
+
+        viewModel.searchMovies(query: text) { movies in
+            let resultsVC = searchController.searchResultsController
+                as? SearchResultsController
+            resultsVC?.update(movies: movies)
+        }
     }
 }
 extension HomeController: UISearchBarDelegate {
@@ -111,14 +122,10 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        let section = viewModel.items[indexPath.section]
-
-        if section.title.contains("Results") {
-            let rows = ceil(Double(section.movies.count) / 2.0)
-            let height = rows * 260 + 80
-            return .init(width: collectionView.frame.width, height: height)
-        }
-
-        return .init(width: collectionView.frame.width, height: 260)
+     
+        return .init(
+            width: collectionView.frame.width,
+            height: 260
+        )
     }
 }

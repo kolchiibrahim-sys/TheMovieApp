@@ -27,7 +27,7 @@ final class HomeSectionCell: UICollectionViewCell {
         collection.showsHorizontalScrollIndicator = false
         collection.backgroundColor = .clear
         collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.isScrollEnabled = false 
+        collection.isScrollEnabled = false
         collection.register(HomeCell.self, forCellWithReuseIdentifier: "HomeCell")
         return collection
     }()
