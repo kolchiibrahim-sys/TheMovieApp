@@ -21,21 +21,21 @@ final class HomeController: BaseController {
         collection.dataSource = self
         collection.backgroundColor = .clear
         collection.translatesAutoresizingMaskIntoConstraints = false
-
         collection.register(
             HomeSectionCell.self,
             forCellWithReuseIdentifier: "HomeSectionCell"
         )
-
         return collection
     }()
 
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModel()
         viewModel.loadHomeData()
     }
 
+    // MARK: - UI
     override func configureUI() {
         view.backgroundColor = .white
         navigationItem.title = "Movies"
@@ -43,12 +43,14 @@ final class HomeController: BaseController {
         navigationItem.largeTitleDisplayMode = .always
 
         searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self //
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search movies"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
     }
 
+    // MARK: - Constraints
     override func configureConstraints() {
         view.addSubview(collection)
         NSLayoutConstraint.activate([
@@ -59,6 +61,7 @@ final class HomeController: BaseController {
         ])
     }
 
+    // MARK: - Binding
     private func bindViewModel() {
         viewModel.onSuccess = { [weak self] in
             self?.collection.reloadData()
@@ -69,15 +72,17 @@ final class HomeController: BaseController {
         }
     }
 }
-
 extension HomeController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let text = searchController.searchBar.text ?? ""
         viewModel.searchMovies(query: text)
-        searchController.searchBar.delegate = self
     }
 }
-
+extension HomeController: UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.cancelSearch()
+    }
+}
 extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -105,11 +110,15 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: collectionView.frame.width, height: 260)
-    }
-}
-extension HomeController: UISearchBarDelegate {
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.cancelSearch()
+
+        let section = viewModel.items[indexPath.section]
+
+        if section.title.contains("Results") {
+            let rows = ceil(Double(section.movies.count) / 2.0)
+            let height = rows * 260 + 80
+            return .init(width: collectionView.frame.width, height: height)
+        }
+
+        return .init(width: collectionView.frame.width, height: 260)
     }
 }

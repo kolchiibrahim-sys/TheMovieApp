@@ -63,7 +63,10 @@ final class HomeViewModel {
                 switch result {
                 case .success(let movies):
                     self?.items = [
-                        HomeModel(title: "Search Results", movies: movies)
+                        HomeModel(
+                            title: "Results for \"\(trimmed)\"",
+                            movies: movies
+                        )
                     ]
                     self?.onSuccess?()
                 case .failure(let error):
