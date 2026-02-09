@@ -66,13 +66,12 @@ class MovieDetailController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    func configure(with data: MovieResult) { // HomeModel yox, MovieResult olmalıdır
+    func configure(with data: Movie) { 
         movieTitleLabel.text = data.title
+        overviewLabel.text = data.overview
         
-        if let path = data.posterPath {
-            let fullURL = CoreHelper.shared.configureImageURL(path: path)
-            downloadImage(from: fullURL)
-        
+        if let url = data.posterURL {
+            downloadImage(from: url.absoluteString)
         }
     }
 
@@ -107,3 +106,4 @@ class MovieDetailController: UIViewController {
         ])
     }
 }
+

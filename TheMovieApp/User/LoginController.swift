@@ -109,7 +109,6 @@ class LoginController: UIViewController {
             config.cornerStyle = .fixed
             b.configuration = config
         } else {
-            // Fallback for iOS versions prior to 15.0
             b.setTitle("Login with Google", for: .normal)
             b.setTitleColor(.gray, for: .normal)
             b.backgroundColor = UIColor(white: 0.96, alpha: 1)

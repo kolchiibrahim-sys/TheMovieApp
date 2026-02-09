@@ -7,88 +7,104 @@
 import UIKit
 
 final class HomeController: BaseController {
-    
+
     private let searchController = UISearchController(searchResultsController: nil)
     private let viewModel = HomeViewModel()
-    
-    lazy var collection: UICollectionView = {
+
+    private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = .zero
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 24
-        
+
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.delegate = self
         collection.dataSource = self
         collection.backgroundColor = .clear
         collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.register(HomeCell.self, forCellWithReuseIdentifier: "HomeCell")
-        collection.contentInsetAdjustmentBehavior = .automatic
+
+        collection.register(
+            HomeSectionCell.self,
+            forCellWithReuseIdentifier: "HomeSectionCell"
+        )
+
         return collection
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        bindViewModel()
+        viewModel.loadHomeData()
     }
-    
+
     override func configureUI() {
         view.backgroundColor = .white
         navigationItem.title = "Movies"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-        
+
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search movies"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
     }
-    
-    override func configureViewModel() {
-        viewModel.getMovies()
-        viewModel.success = { [weak self] in
-            self?.collection.reloadData()
-            print("self.viewModel.items.count: \(self?.viewModel.items.count ?? 0)")
-        }
-    }
-    
+
     override func configureConstraints() {
         view.addSubview(collection)
         NSLayoutConstraint.activate([
             collection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+
+    private func bindViewModel() {
+        viewModel.onSuccess = { [weak self] in
+            self?.collection.reloadData()
+        }
+
+        viewModel.onError = { error in
+            print("API ERROR:", error)
+        }
     }
 }
 
+// MARK: - Search
 extension HomeController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let _ = searchController.searchBar.text ?? ""
     }
 }
 
-extension HomeController: CollectionConfiguration {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+// MARK: - CollectionView
+extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         viewModel.items.count
     }
-    
+
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        1 // 🔥 hər section = 1 cell
+    }
+
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "HomeCell",
+            withReuseIdentifier: "HomeSectionCell",
             for: indexPath
-        ) as! HomeCell
-        
-        cell.configure(data: viewModel.items[indexPath.item])
+        ) as! HomeSectionCell
+
+        let section = viewModel.items[indexPath.section]
+        cell.configure(with: section)
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: collectionView.frame.width, height: 312)
+        .init(width: collectionView.frame.width, height: 260)
     }
 }
