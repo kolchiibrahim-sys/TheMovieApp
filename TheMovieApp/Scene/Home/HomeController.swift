@@ -70,14 +70,14 @@ final class HomeController: BaseController {
     }
 }
 
-// MARK: - Search
 extension HomeController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        let _ = searchController.searchBar.text ?? ""
+        let text = searchController.searchBar.text ?? ""
+        viewModel.searchMovies(query: text)
+        searchController.searchBar.delegate = self
     }
 }
 
-// MARK: - CollectionView
 extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -86,7 +86,7 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
 
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        1 // 🔥 hər section = 1 cell
+        1
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -106,5 +106,10 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         .init(width: collectionView.frame.width, height: 260)
+    }
+}
+extension HomeController: UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.cancelSearch()
     }
 }

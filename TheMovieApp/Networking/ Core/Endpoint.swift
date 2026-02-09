@@ -14,10 +14,11 @@ enum Endpoint {
     case topRatedMovies
     case popularActors
     case trendingMovies
+    case searchMovies(query: String)
 }
 
 extension Endpoint {
-
+    
     var path: String {
         switch self {
         case .popularMovies:
@@ -32,13 +33,25 @@ extension Endpoint {
             return "/person/popular"
         case .trendingMovies:
             return "/trending/movie/day"
+        case .searchMovies:
+            return "/search/movie"
         }
     }
-
+    
     var parameters: Parameters {
-        [
-            "language": "en-US",
-            "page": 1
-        ]
+        switch self {
+        case .searchMovies(let query):
+            return [
+                "query": query,
+                "language": "en-US",
+                "page": 1,
+                "include_adult": false
+            ]
+        default:
+            return [
+                "language": "en-US",
+                "page": 1
+            ]
+        }
     }
 }
