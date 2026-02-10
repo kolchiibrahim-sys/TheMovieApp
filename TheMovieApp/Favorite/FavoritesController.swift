@@ -4,16 +4,17 @@
 //
 //  Created by Kolchı Ibrahım on 10.02.26.
 //
-
 import UIKit
 import Alamofire
 import Kingfisher
-final class FavaritesController: BaseController {
 
-    // MARK: - State
+final class FavoritesController: BaseController,
+                                 UICollectionViewDataSource,
+                                 UICollectionViewDelegateFlowLayout {
+
+    
     private var movies: [Movie] = []
     private let manager = MovieManager()
-
     private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 24
@@ -30,27 +31,21 @@ final class FavaritesController: BaseController {
         )
         return collection
     }()
-
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         loadFavorites()
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(favoritesUpdated),
+            selector: #selector(FavoritesController.favoritesUpdated),
             name: .favoritesUpdated,
             object: nil
         )
     }
-
-    // MARK: - UI
     override func configureUI() {
         title = "Favorites"
         view.backgroundColor = .systemBackground
     }
-
-    // MARK: - Constraints
     override func configureConstraints() {
         view.addSubview(collection)
         NSLayoutConstraint.activate([
@@ -60,39 +55,34 @@ final class FavaritesController: BaseController {
             collection.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
-    // MARK: - Data
     private func loadFavorites() {
         let ids = FavoritesManager.shared.allIds()
         movies.removeAll()
 
         guard !ids.isEmpty else {
-            DispatchQueue.main.async {
-                self.collection.reloadData()
-            }
+            collection.reloadData()
             return
         }
 
-        ids.forEach { id in
-            manager.fetchMovies(endpoint: .searchMovies(query: "\(id)")) { [weak self] result in
-                guard let movie = result.first else { return }
-                self?.movies.append(movie)
+        let group = DispatchGroup()
 
-                DispatchQueue.main.async {
-                    self?.collection.reloadData()
+        ids.forEach { id in
+            group.enter()
+            manager.fetchMovieDetail(id: id) { [weak self] (movie: Movie?) in
+                if let movie {
+                    self?.movies.append(movie)
                 }
+                group.leave()
             }
         }
-    }
 
+        group.notify(queue: .main) {
+            self.collection.reloadData()
+        }
+    }
     @objc private func favoritesUpdated() {
         loadFavorites()
     }
-}
-
-// MARK: - CollectionView
-extension FavaritesController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
@@ -113,12 +103,12 @@ extension FavaritesController: UICollectionViewDataSource, UICollectionViewDeleg
         cell.configure(data: movies[indexPath.item])
         return cell
     }
-
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
+
         let width = (collectionView.frame.width - 16 * 3) / 2
         return .init(width: width, height: 260)
     }

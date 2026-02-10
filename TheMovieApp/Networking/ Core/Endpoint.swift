@@ -15,6 +15,7 @@ enum Endpoint {
     case popularActors
     case trendingMovies
     case searchMovies(query: String)
+    case movieDetail(id: Int)
 }
 
 extension Endpoint {
@@ -35,6 +36,8 @@ extension Endpoint {
             return "/trending/movie/day"
         case .searchMovies:
             return "/search/movie"
+        case .movieDetail(let id):
+            return "/movie/\(id)"
         }
     }
     
@@ -49,8 +52,7 @@ extension Endpoint {
             ]
         default:
             return [
-                "language": "en-US",
-                "page": 1
+                "language": "en-US"
             ]
         }
     }

@@ -8,6 +8,7 @@ import Foundation
 
 final class FavoritesManager {
 
+    static let favoritesUpdatedNotification = Notification.Name("favoritesUpdated")
     static let shared = FavoritesManager()
     private init() {}
 
@@ -35,6 +36,7 @@ final class FavoritesManager {
             ids.insert(id)
         }
         favoriteIds = ids
+        NotificationCenter.default.post(name: FavoritesManager.favoritesUpdatedNotification, object: nil)
     }
 
     func allIds() -> [Int] {
