@@ -38,7 +38,9 @@ final class SearchResultsController: UIViewController {
 
     func update(movies: [Movie]) {
         self.movies = movies
-        collectionView.reloadData()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
 
     private func makeLayout() -> UICollectionViewLayout {
@@ -61,18 +63,10 @@ final class SearchResultsController: UIViewController {
 
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 20
-        section.contentInsets = .init(
-            top: 16,
-            leading: 16,
-            bottom: 24,
-            trailing: 16
-        )
-
-
+        section.contentInsets = .init(top: 16, leading: 16, bottom: 24, trailing: 16)
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
-
 extension SearchResultsController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
@@ -82,7 +76,6 @@ extension SearchResultsController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "HomeCell",
             for: indexPath
@@ -92,7 +85,6 @@ extension SearchResultsController: UICollectionViewDataSource {
         return cell
     }
 }
-
 extension SearchResultsController: UICollectionViewDelegate {
-    
+
 }

@@ -8,69 +8,64 @@ import Foundation
 
 final class HomeViewModel {
 
-    private let service: MovieServiceProtocol
     private(set) var items: [HomeModel] = []
 
-    private var isSearching = false
+    var onUpdate: (() -> Void)?
 
-    var onSuccess: (() -> Void)?
-    var onError: ((String) -> Void)?
-
-    init(service: MovieServiceProtocol = MovieService()) {
-        self.service = service
-    }
+    private let service = MovieManager()
 
     func loadHomeData() {
-        isSearching = false
         items.removeAll()
 
-        fetch(endpoint: .trendingMovies, title: "Trending Today")
-        fetch(endpoint: .nowPlayingMovies, title: "Now Playing")
-        fetch(endpoint: .upcomingMovies, title: "Upcoming")
-        fetch(endpoint: .popularMovies, title: "Popular")
-        fetch(endpoint: .topRatedMovies, title: "Top Rated")
+        fetchTrending()
+        fetchNowPlaying()
+        fetchUpcoming()
+        fetchPopular()
+        fetchTopRated()
     }
 
-    private func fetch(endpoint: Endpoint, title: String) {
-        service.fetchMovies(endpoint: endpoint) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let movies):
-                    self?.items.append(
-                        HomeModel(title: title, movies: movies)
-                    )
-                    self?.onSuccess?()
-                case .failure(let error):
-                    self?.onError?(error.localizedDescription)
-                }
-            }
+    private func fetchTrending() {
+        service.fetchMovies(endpoint: .trendingMovies) { [weak self] movies in
+            self?.items.append(
+                HomeModel(title: "Trending Today", movies: movies)
+            )
+            self?.onUpdate?()
         }
     }
-    func searchMovies(query: String, completion: @escaping ([Movie]) -> Void) {
 
-        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            completion([])
-            return
+    private func fetchNowPlaying() {
+        service.fetchMovies(endpoint: .nowPlayingMovies) { [weak self] movies in
+            self?.items.append(
+                HomeModel(title: "Now Playing", movies: movies)
+            )
+            self?.onUpdate?()
         }
+    }
 
-        isSearching = true
-        items.removeAll()
-
-        service.fetchMovies(endpoint: .searchMovies(query: trimmed)) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let movies):
-                        completion(movies)
-                    case .failure:
-                        completion([])
-                    }
-                }
-            }
+    private func fetchUpcoming() {
+        service.fetchMovies(endpoint: .upcomingMovies) { [weak self] movies in
+            self?.items.append(
+                HomeModel(title: "Upcoming", movies: movies)
+            )
+            self?.onUpdate?()
         }
+    }
 
-    func cancelSearch() {
-        guard isSearching else { return }
-        loadHomeData()
+    private func fetchPopular() {
+        service.fetchMovies(endpoint: .popularMovies) { [weak self] movies in
+            self?.items.append(
+                HomeModel(title: "Popular", movies: movies)
+            )
+            self?.onUpdate?()
+        }
+    }
+
+    private func fetchTopRated() {
+        service.fetchMovies(endpoint: .topRatedMovies) { [weak self] movies in
+            self?.items.append(
+                HomeModel(title: "Top Rated", movies: movies)
+            )
+            self?.onUpdate?()
+        }
     }
 }

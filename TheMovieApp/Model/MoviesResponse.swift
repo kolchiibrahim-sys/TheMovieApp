@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct MoviesResponse: Decodable {
+struct MoviesResponse: Decodable , Sendable {
     let results: [Movie]
 }

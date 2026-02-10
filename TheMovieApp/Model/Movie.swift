@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Movie: Decodable {
+struct Movie: Decodable , Sendable {
     let id: Int
     let title: String
     let overview: String?
