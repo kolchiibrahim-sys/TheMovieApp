@@ -5,10 +5,18 @@
 //  Created by Kolchı Ibrahım on 31.01.26.
 //
 import UIKit
+import Alamofire
 import Kingfisher
 
 final class HomeCell: UICollectionViewCell {
 
+    private var movieId: Int?
+    private let favoriteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.tintColor = .systemRed
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
 
     private let posterImageView: UIImageView = {
         let iv = UIImageView()
@@ -38,6 +46,7 @@ final class HomeCell: UICollectionViewCell {
 
         contentView.addSubview(posterImageView)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(favoriteButton)
 
         contentView.layer.shadowColor = UIColor.black.cgColor
         contentView.layer.shadowOpacity = 0.08
@@ -56,38 +65,60 @@ final class HomeCell: UICollectionViewCell {
             posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             posterImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-
             posterImageView.heightAnchor.constraint(
                 equalTo: posterImageView.widthAnchor,
                 multiplier: 1.5
             ),
-
             posterImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+
+            favoriteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            favoriteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            favoriteButton.widthAnchor.constraint(equalToConstant: 24),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 24)
         ])
+
+        favoriteButton.addAction(
+            UIAction { [weak self] _ in
+                guard let id = self?.movieId else { return }
+                FavoritesManager.shared.toggle(id: id)
+                self?.updateFavoriteIcon()
+
+                NotificationCenter.default.post(
+                    name: .favoritesUpdated,
+                    object: nil
+                )
+            },
+            for: .touchUpInside
+        )
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = posterImageView.bounds
     }
 
-
     override func prepareForReuse() {
         super.prepareForReuse()
         posterImageView.image = nil
         titleLabel.text = nil
+        movieId = nil
     }
 
+
     func configure(data: Movie) {
+        movieId = data.id
         titleLabel.text = data.title
+
+        updateFavoriteIcon()
 
         if let path = data.posterPath {
             let url = CoreHelper.shared.configureImageURL(path: path)
@@ -95,6 +126,12 @@ final class HomeCell: UICollectionViewCell {
         }
     }
 
+    private func updateFavoriteIcon() {
+        guard let id = movieId else { return }
+        let isFav = FavoritesManager.shared.isFavorite(id: id)
+        let imageName = isFav ? "heart.fill" : "heart"
+        favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
     override var isHighlighted: Bool {
         didSet {
             UIView.animate(withDuration: 0.15) {
@@ -104,4 +141,7 @@ final class HomeCell: UICollectionViewCell {
             }
         }
     }
+}
+extension Notification.Name {
+    static let favoritesUpdated = Notification.Name("favoritesUpdated")
 }
