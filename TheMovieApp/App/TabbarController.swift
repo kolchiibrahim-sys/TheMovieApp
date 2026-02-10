@@ -35,7 +35,7 @@ class TabbarController: UITabBarController {
         )
 
         // Favorites 
-        let favoritesController = FavoritesController()
+        let favoritesController = FavaritesController()
         let favoritesNav = UINavigationController(rootViewController: favoritesController)
         favoritesNav.tabBarItem = .init(
             title: "Favorites",
