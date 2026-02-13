@@ -60,3 +60,15 @@ extension ActorController: CollectionConfiguration {
         .init(width: 168, height: 168)
     }
 }
+extension ActorController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let position = scrollView.contentOffset.y
+        
+        if position > (collection.contentSize.height - scrollView.frame.size.height - 100) {
+            print(position)
+            viewModel.getActorList()
+        }
+    }
+}

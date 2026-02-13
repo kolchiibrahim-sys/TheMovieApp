@@ -2,7 +2,7 @@
 //  MovieManager.swift
 //  TheMovieApp
 //
-//  Created by Shamkhal Guliyev on 04.02.26.
+//  Created by Kolchi Ibrahim on 04.02.26.
 //
 import Foundation
 import Alamofire
@@ -10,7 +10,6 @@ import Alamofire
 @MainActor
 final class MovieManager {
 
-    // MARK: - List / Home / Search
     func fetchMovies(
         endpoint: Endpoint,
         completion: @escaping ([Movie]) -> Void
@@ -40,7 +39,6 @@ final class MovieManager {
         }
     }
 
-    // MARK: - Movie Detail (Favorites üçün)
     func fetchMovieDetail(
         id: Int,
         completion: @escaping (Movie?) -> Void

@@ -67,10 +67,9 @@ final class SearchResultsController: UIViewController {
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
-extension SearchResultsController: UICollectionViewDataSource {
 
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
+extension SearchResultsController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         movies.count
     }
 
@@ -85,6 +84,7 @@ extension SearchResultsController: UICollectionViewDataSource {
         return cell
     }
 }
+
 extension SearchResultsController: UICollectionViewDelegate {
 
 }

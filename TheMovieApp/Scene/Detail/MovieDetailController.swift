@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class MovieDetailController: UIViewController {
+class MovieDetailController: BaseController {
     
     private let backButton: UIButton = {
         let b = UIButton(type: .system)
@@ -48,14 +48,33 @@ class MovieDetailController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
-        configureConstraints()
+        
         setupActions()
     }
     
-    private func configureUI() {
+    override func configureUI() {
         view.backgroundColor = .white
         [backButton, posterImageView, movieTitleLabel, overviewLabel].forEach { view.addSubview($0) }
+    }
+    
+    override func configureConstraints() {
+        NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
+            posterImageView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
+            posterImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            posterImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            posterImageView.heightAnchor.constraint(equalToConstant: 450),
+            
+            movieTitleLabel.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 20),
+            movieTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            movieTitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            overviewLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 15),
+            overviewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            overviewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
     
     private func setupActions() {
@@ -84,26 +103,6 @@ class MovieDetailController: UIViewController {
                 }
             }
         }.resume()
-    }
-    
-    private func configureConstraints() {
-        NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            
-            posterImageView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
-            posterImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            posterImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            posterImageView.heightAnchor.constraint(equalToConstant: 450),
-            
-            movieTitleLabel.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 20),
-            movieTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            movieTitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            
-            overviewLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 15),
-            overviewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            overviewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
     }
 }
 
