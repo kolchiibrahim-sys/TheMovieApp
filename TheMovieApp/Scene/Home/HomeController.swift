@@ -31,12 +31,10 @@ final class HomeController: BaseController {
         return collection
     }()
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
-    // MARK: - UI
     override func configureUI() {
         view.backgroundColor = .systemBackground
         navigationItem.title = "Movies"
@@ -51,8 +49,6 @@ final class HomeController: BaseController {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search movies"
     }
-
-    // MARK: - ViewModel
     override func configureViewModel() {
         viewModel.onUpdate = { [weak self] in
             self?.collection.reloadData()
@@ -61,7 +57,6 @@ final class HomeController: BaseController {
         viewModel.loadHomeData()
     }
 
-    // MARK: - Constraints
     override func configureConstraints() {
         view.addSubview(collection)
         NSLayoutConstraint.activate([
@@ -112,9 +107,20 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
 
         let section = viewModel.items[indexPath.section]
         cell.configure(with: section)
+
+        cell.seeAllTapped = { [weak self] in
+            guard let self = self else { return }
+
+            let vc = MovieListViewController(
+                movies: section.movies,
+                title: section.title
+            )
+
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+
         return cell
     }
-
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {

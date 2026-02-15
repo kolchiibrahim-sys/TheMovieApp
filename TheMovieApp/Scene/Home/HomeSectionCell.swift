@@ -10,6 +10,7 @@ import UIKit
 final class HomeSectionCell: UICollectionViewCell {
 
     private var movies: [Movie] = []
+    var seeAllTapped: (() -> Void)?
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -17,6 +18,15 @@ final class HomeSectionCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+
+    private let seeAllButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("See All", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     private lazy var collection: UICollectionView = {
         let collection = UICollectionView(
             frame: .zero,
@@ -36,11 +46,19 @@ final class HomeSectionCell: UICollectionViewCell {
         super.init(frame: frame)
 
         contentView.addSubview(titleLabel)
+        contentView.addSubview(seeAllButton)
         contentView.addSubview(collection)
+
+        seeAllButton.addTarget(self,
+                               action: #selector(handleSeeAll),
+                               for: .touchUpInside)
 
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+
+            seeAllButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            seeAllButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
             collection.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             collection.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -50,12 +68,18 @@ final class HomeSectionCell: UICollectionViewCell {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError()
+    }
+
+    @objc private func handleSeeAll() {
+        seeAllTapped?()
     }
 
     func configure(with model: HomeModel) {
         titleLabel.text = model.title
         movies = model.movies
+
+        seeAllButton.isHidden = movies.isEmpty
 
         if model.title.contains("Results") {
             collection.setCollectionViewLayout(
@@ -115,7 +139,7 @@ final class HomeSectionCell: UICollectionViewCell {
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(top: 0, leading: 12, bottom: 0, trailing: 12)
         section.orthogonalScrollingBehavior = .none
-        section.contentInsets = .init(top: 0, leading: 12, bottom: 0, trailing: 12)
+
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
