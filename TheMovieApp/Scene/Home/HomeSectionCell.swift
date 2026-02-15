@@ -11,6 +11,7 @@ final class HomeSectionCell: UICollectionViewCell {
 
     private var movies: [Movie] = []
     var seeAllTapped: (() -> Void)?
+    var movieTapped: ((Int) -> Void)?
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -78,7 +79,6 @@ final class HomeSectionCell: UICollectionViewCell {
     func configure(with model: HomeModel) {
         titleLabel.text = model.title
         movies = model.movies
-
         seeAllButton.isHidden = movies.isEmpty
 
         if model.title.contains("Results") {
@@ -161,5 +161,9 @@ extension HomeSectionCell: UICollectionViewDataSource, UICollectionViewDelegate 
 
         cell.configure(data: movies[indexPath.item])
         return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        movieTapped?(movies[indexPath.item].id)
     }
 }

@@ -16,6 +16,8 @@ enum Endpoint {
     case trendingMovies
     case searchMovies(query: String)
     case movieDetail(id: Int)
+    case movieCredits(id: Int)
+    case movieReviews(id: Int)
 }
 
 extension Endpoint {
@@ -38,6 +40,10 @@ extension Endpoint {
             return "/search/movie"
         case .movieDetail(let id):
             return "/movie/\(id)"
+        case .movieCredits(let id):
+            return "/movie/\(id)/credits"
+        case .movieReviews(let id):
+            return "/movie/\(id)/reviews"
         }
     }
     

@@ -49,11 +49,11 @@ final class HomeController: BaseController {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search movies"
     }
+
     override func configureViewModel() {
         viewModel.onUpdate = { [weak self] in
             self?.collection.reloadData()
         }
-
         viewModel.loadHomeData()
     }
 
@@ -67,6 +67,7 @@ final class HomeController: BaseController {
         ])
     }
 }
+
 extension HomeController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let text = searchController.searchBar.text ?? ""
@@ -81,11 +82,13 @@ extension HomeController: UISearchResultsUpdating {
         }
     }
 }
+
 extension HomeController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsController.update(movies: [])
     }
 }
+
 extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -114,15 +117,21 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
                 title: section.title,
                 endpoint: section.endpoint
             )
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
 
+        cell.movieTapped = { [weak self] movieId in
+            guard let self = self else { return }
+            let vc = MovieDetailController(movieId: movieId)
             self.navigationController?.pushViewController(vc, animated: true)
         }
 
         return cell
     }
+
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: collectionView.frame.width, height: 260)
+        .init(width: collectionView.frame.width, height: 280)
     }
 }
