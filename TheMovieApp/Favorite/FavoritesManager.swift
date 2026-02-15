@@ -8,13 +8,12 @@ import Foundation
 
 final class FavoritesManager {
 
-    static let favoritesUpdatedNotification = Notification.Name("favoritesUpdated")
     static let shared = FavoritesManager()
     private init() {}
 
-    private let key = "favorite_movie_ids"
+    private let key = "favorite_movies"
 
-    private var favoriteIds: Set<Int> {
+    private var favorites: Set<Int> {
         get {
             let array = UserDefaults.standard.array(forKey: key) as? [Int] ?? []
             return Set(array)
@@ -24,22 +23,23 @@ final class FavoritesManager {
         }
     }
 
-    func isFavorite(id: Int) -> Bool {
-        favoriteIds.contains(id)
-    }
-
     func toggle(id: Int) {
-        var ids = favoriteIds
-        if ids.contains(id) {
-            ids.remove(id)
+        var favs = favorites
+
+        if favs.contains(id) {
+            favs.remove(id)
         } else {
-            ids.insert(id)
+            favs.insert(id)
         }
-        favoriteIds = ids
-        NotificationCenter.default.post(name: FavoritesManager.favoritesUpdatedNotification, object: nil)
+
+        favorites = favs
     }
 
-    func allIds() -> [Int] {
-        Array(favoriteIds)
+    func isFavorite(id: Int) -> Bool {
+        favorites.contains(id)
+    }
+
+    func getAll() -> [Int] {
+        Array(favorites)
     }
 }

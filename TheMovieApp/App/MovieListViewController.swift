@@ -101,3 +101,13 @@ extension SeeAllController: UIScrollViewDelegate {
         }
     }
 }
+extension SeeAllController {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+
+        let movie = movies[indexPath.item]
+        let vc = MovieDetailController(movieId: movie.id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}

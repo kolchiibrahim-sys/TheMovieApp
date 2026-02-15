@@ -18,6 +18,7 @@ enum Endpoint {
     case movieDetail(id: Int)
     case movieCredits(id: Int)
     case movieReviews(id: Int)
+    case searchActors(query: String)
 }
 
 extension Endpoint {
@@ -44,6 +45,8 @@ extension Endpoint {
             return "/movie/\(id)/credits"
         case .movieReviews(let id):
             return "/movie/\(id)/reviews"
+        case .searchActors:
+            return "/search/person"
         }
     }
     
@@ -54,6 +57,11 @@ extension Endpoint {
                 "query": query,
                 "language": "en-US",
                 "include_adult": false
+            ]
+        case .searchActors(let query):
+            return [
+                "query": query,
+                "language": "en-US"
             ]
         default:
             return [
