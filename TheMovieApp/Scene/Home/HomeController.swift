@@ -110,10 +110,9 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegateFl
 
         cell.seeAllTapped = { [weak self] in
             guard let self = self else { return }
-
-            let vc = MovieListViewController(
-                movies: section.movies,
-                title: section.title
+            let vc = SeeAllController(
+                title: section.title,
+                endpoint: section.endpoint
             )
 
             self.navigationController?.pushViewController(vc, animated: true)

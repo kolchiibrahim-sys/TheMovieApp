@@ -41,13 +41,12 @@ extension Endpoint {
         }
     }
     
-    var parameters: Parameters {
+    var parameters: Parameters? {
         switch self {
         case .searchMovies(let query):
             return [
                 "query": query,
                 "language": "en-US",
-                "page": 1,
                 "include_adult": false
             ]
         default:
